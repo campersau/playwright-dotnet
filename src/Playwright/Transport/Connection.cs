@@ -143,7 +143,15 @@ namespace Microsoft.Playwright.Transport
                         object obj = propertyDescriptor.GetValue(args);
                         if (obj != null)
                         {
+#if NETSTANDARD
                             string name = propertyDescriptor.Name.Substring(0, 1).ToLower() + propertyDescriptor.Name.Substring(1);
+#else
+                            string name = string.Create(propertyDescriptor.Name.Length, propertyDescriptor.Name, (span, state) =>
+                            {
+                                state.CopyTo(span);
+                                span[0] = char.ToLowerInvariant(state[0]);
+                            });
+#endif
                             sanitizedArgs.Add(name, obj);
                         }
                     }

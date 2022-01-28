@@ -26,6 +26,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Playwright.Helpers;
 using Microsoft.Playwright.Transport;
 using Microsoft.Playwright.Transport.Channels;
 
@@ -83,7 +84,20 @@ namespace Microsoft.Playwright.Core
             return result.Length;
         }
 
-        public override void Close() => _stream.CloseAsync().ConfigureAwait(false);
+#if !NETSTANDARD
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            var result = await _stream.ReadAsync(buffer.Length).ConfigureAwait(false);
+            result.CopyTo(buffer);
+            return result.Length;
+        }
+
+#pragma warning disable CA2215 // Dispose methods should call base class dispose
+        public override ValueTask DisposeAsync() => new ValueTask(_stream.CloseAsync());
+#pragma warning restore CA2215 // Dispose methods should call base class dispose
+#endif
+
+        public override void Close() => _stream.CloseAsync().IgnoreException();
 
         public override long Seek(long offset, SeekOrigin origin) => throw new NotImplementedException();
 
