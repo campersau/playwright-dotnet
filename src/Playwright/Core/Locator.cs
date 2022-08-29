@@ -84,8 +84,8 @@ namespace Microsoft.Playwright.Core
         public async Task<IReadOnlyList<string>> AllTextContentsAsync()
             => await EvaluateAllAsync<string[]>("ee => ee.map(e => e.textContent || '')").ConfigureAwait(false);
 
-        public async Task<LocatorBoundingBoxResult> BoundingBoxAsync(LocatorBoundingBoxOptions options = null)
-            => await WithElementAsync(
+        public Task<LocatorBoundingBoxResult> BoundingBoxAsync(LocatorBoundingBoxOptions options = null)
+            => WithElementAsync(
                 async (h, _) =>
                 {
                     var bb = await h.BoundingBoxAsync().ConfigureAwait(false);
@@ -102,7 +102,7 @@ namespace Microsoft.Playwright.Core
                         Y = bb.Y,
                     };
                 },
-                options).ConfigureAwait(false);
+                options);
 
         public Task CheckAsync(LocatorCheckOptions options = null)
             => _frame.CheckAsync(
@@ -131,10 +131,10 @@ namespace Microsoft.Playwright.Core
         public Task DragToAsync(ILocator target, LocatorDragToOptions options = null)
             => _frame.DragAndDropAsync(_selector, ((Locator)target)._selector, ConvertOptions<FrameDragAndDropOptions>(options));
 
-        public async Task<IElementHandle> ElementHandleAsync(LocatorElementHandleOptions options = null)
-            => await _frame.WaitForSelectorAsync(
+        public Task<IElementHandle> ElementHandleAsync(LocatorElementHandleOptions options = null)
+            => _frame.WaitForSelectorAsync(
                 _selector,
-                ConvertOptions<FrameWaitForSelectorOptions>(options)).ConfigureAwait(false);
+                ConvertOptions<FrameWaitForSelectorOptions>(options));
 
         public Task<IReadOnlyList<IElementHandle>> ElementHandlesAsync()
             => _frame.QuerySelectorAllAsync(_selector);
@@ -148,11 +148,11 @@ namespace Microsoft.Playwright.Core
         public Task<T> EvaluateAsync<T>(string expression, object arg = null, LocatorEvaluateOptions options = null)
             => _frame.EvalOnSelectorAsync<T>(_selector, expression, arg, ConvertOptions<FrameEvalOnSelectorOptions>(options));
 
-        public async Task<IJSHandle> EvaluateHandleAsync(string expression, object arg = null, LocatorEvaluateHandleOptions options = null)
-            => await WithElementAsync(async (e, _) => await e.EvaluateHandleAsync(expression, arg).ConfigureAwait(false), options).ConfigureAwait(false);
+        public Task<IJSHandle> EvaluateHandleAsync(string expression, object arg = null, LocatorEvaluateHandleOptions options = null)
+            => WithElementAsync((e, _) => e.EvaluateHandleAsync(expression, arg), options);
 
-        public async Task FillAsync(string value, LocatorFillOptions options = null)
-            => await _frame.FillAsync(_selector, value, ConvertOptions<FrameFillOptions>(options)).ConfigureAwait(false);
+        public Task FillAsync(string value, LocatorFillOptions options = null)
+            => _frame.FillAsync(_selector, value, ConvertOptions<FrameFillOptions>(options));
 
         public Task FocusAsync(LocatorFocusOptions options = null)
             => _frame.FocusAsync(_selector, ConvertOptions<FrameFocusOptions>(options));
@@ -200,7 +200,7 @@ namespace Microsoft.Playwright.Core
             => _frame.PressAsync(_selector, key, ConvertOptions<FramePressOptions>(options));
 
         public Task<byte[]> ScreenshotAsync(LocatorScreenshotOptions options = null)
-            => WithElementAsync(async (h, o) => await h.ScreenshotAsync(ConvertOptions<ElementHandleScreenshotOptions>(o)).ConfigureAwait(false), options);
+            => WithElementAsync((h, o) => h.ScreenshotAsync(ConvertOptions<ElementHandleScreenshotOptions>(o)), options);
 
         public Task ScrollIntoViewIfNeededAsync(LocatorScrollIntoViewIfNeededOptions options = null)
             => WithElementAsync(async (h, o) => await h.ScrollIntoViewIfNeededAsync(ConvertOptions<ElementHandleScrollIntoViewIfNeededOptions>(o)).ConfigureAwait(false), options);

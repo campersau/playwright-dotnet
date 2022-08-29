@@ -52,13 +52,13 @@ namespace Microsoft.Playwright.Core
 
         internal string AbsolutePath { get; }
 
-        public async Task<string> PathAfterFinishedAsync()
+        public Task<string> PathAfterFinishedAsync()
         {
             if (_connection.IsRemote)
             {
                 throw new PlaywrightException("Path is not available when connecting remotely. Use SaveAsAsync() to save a local copy.");
             }
-            return await _channel.PathAfterFinishedAsync().ConfigureAwait(false);
+            return _channel.PathAfterFinishedAsync();
         }
 
         public async Task SaveAsAsync(string path)

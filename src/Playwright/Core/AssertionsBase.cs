@@ -50,17 +50,17 @@ namespace Microsoft.Playwright.Core
 
         internal Locator ActualLocator { get; private set; }
 
-        internal async Task ExpectImplAsync(string expression, ExpectedTextValue textValue, object expected, string message, FrameExpectOptions options)
+        internal Task ExpectImplAsync(string expression, ExpectedTextValue textValue, object expected, string message, FrameExpectOptions options)
         {
-            await ExpectImplAsync(expression, new ExpectedTextValue[] { textValue }, expected, message, options).ConfigureAwait(false);
+            return ExpectImplAsync(expression, new ExpectedTextValue[] { textValue }, expected, message, options);
         }
 
-        internal async Task ExpectImplAsync(string expression, ExpectedTextValue[] expectedText, object expected, string message, FrameExpectOptions options)
+        internal Task ExpectImplAsync(string expression, ExpectedTextValue[] expectedText, object expected, string message, FrameExpectOptions options)
         {
             options = options ?? new();
             options.ExpectedText = expectedText;
             options.IsNot = IsNot;
-            await ExpectImplAsync(expression, options, expected, message).ConfigureAwait(false);
+            return ExpectImplAsync(expression, options, expected, message);
         }
 
         internal async Task ExpectImplAsync(string expression, FrameExpectOptions expectOptions, object expected, string message)

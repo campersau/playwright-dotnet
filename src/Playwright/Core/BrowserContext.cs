@@ -399,9 +399,9 @@ namespace Microsoft.Playwright.Core
             await route.InnerContinueAsync(true).ConfigureAwait(false);
         }
 
-        internal async Task DisableInterceptionAsync()
+        internal Task DisableInterceptionAsync()
         {
-            await Channel.SetNetworkInterceptionEnabledAsync(false).ConfigureAwait(false);
+            return Channel.SetNetworkInterceptionEnabledAsync(false);
         }
 
         internal bool UrlMatches(string url, string glob)

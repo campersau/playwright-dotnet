@@ -34,15 +34,15 @@ namespace Microsoft.Playwright.Transport.Channels
         {
         }
 
-        internal async Task WriteAsync(string binary)
+        internal Task WriteAsync(string binary)
         {
-            await Connection.SendMessageToServerAsync(
+            return Connection.SendMessageToServerAsync(
                 Guid,
                 "write",
                 new Dictionary<string, object>
                 {
                     ["binary"] = binary,
-                }).ConfigureAwait(false);
+                });
         }
 
         internal Task CloseAsync() => Connection.SendMessageToServerAsync(Guid, "close", null);

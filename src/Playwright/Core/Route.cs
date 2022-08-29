@@ -91,16 +91,16 @@ namespace Microsoft.Playwright.Core
             ReportHandled(true);
         }
 
-        internal async Task InnerContinueAsync(bool @internal = false)
+        internal Task InnerContinueAsync(bool @internal = false)
         {
             var options = _request.FallbackOverridesForContinue();
-            await _channel.Connection.WrapApiCallAsync(
+            return _channel.Connection.WrapApiCallAsync(
                 async () =>
                 {
                     await RaceWithTargetCloseAsync(_channel.ContinueAsync(url: options.Url, method: options.Method, postData: options.PostData, headers: options.Headers)).ConfigureAwait(false);
                     return 42; // We need to return something to make generics work.
                 },
-                @internal).ConfigureAwait(false);
+                @internal);
         }
 
         private async Task RaceWithTargetCloseAsync(Task task)

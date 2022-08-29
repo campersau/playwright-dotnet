@@ -41,12 +41,12 @@ namespace Microsoft.Playwright.Core
 
         IChannel<Selectors> IChannelOwner<Selectors>.Channel => _channel;
 
-        public async Task RegisterAsync(string name, SelectorsRegisterOptions options = default)
+        public Task RegisterAsync(string name, SelectorsRegisterOptions options = default)
         {
             options ??= new SelectorsRegisterOptions();
 
             var script = ScriptsHelper.EvaluationScript(options?.Script, options?.Path);
-            await _channel.RegisterAsync(name, script, options?.ContentScript).ConfigureAwait(false);
+            return _channel.RegisterAsync(name, script, options?.ContentScript);
         }
     }
 }

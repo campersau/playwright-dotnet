@@ -1091,9 +1091,9 @@ namespace Microsoft.Playwright.Core
             await Context.OnRouteAsync(route, request).ConfigureAwait(false);
         }
 
-        internal async Task DisableInterceptionAsync()
+        internal Task DisableInterceptionAsync()
         {
-            await Channel.SetNetworkInterceptionEnabledAsync(false).ConfigureAwait(false);
+            return Channel.SetNetworkInterceptionEnabledAsync(false);
         }
 
         private void Channel_FrameDetached(object sender, IFrame args)

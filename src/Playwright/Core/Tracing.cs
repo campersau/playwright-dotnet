@@ -41,9 +41,9 @@ namespace Microsoft.Playwright.Core
 
         IChannel<Tracing> IChannelOwner<Tracing>.Channel => _channel;
 
-        public async Task StartAsync(TracingStartOptions options = default)
+        public Task StartAsync(TracingStartOptions options = default)
         {
-            await _channel.Connection.WrapApiCallAsync(async () =>
+            return _channel.Connection.WrapApiCallAsync(async () =>
             {
                 await _channel.TracingStartAsync(
                         name: options?.Name,
@@ -53,26 +53,26 @@ namespace Microsoft.Playwright.Core
                         sources: options?.Sources).ConfigureAwait(false);
                 await _channel.StartChunkAsync(options?.Title).ConfigureAwait(false);
                 return 42; // We need to return something to make generics work.
-            }).ConfigureAwait(false);
+            });
         }
 
         public Task StartChunkAsync() => StartChunkAsync();
 
         public Task StartChunkAsync(TracingStartChunkOptions options) => _channel.StartChunkAsync(title: options?.Title);
 
-        public async Task StopChunkAsync(TracingStopChunkOptions options = null)
+        public Task StopChunkAsync(TracingStopChunkOptions options = null)
         {
-            await DoStopChunkAsync(filePath: options.Path).ConfigureAwait(false);
+            return DoStopChunkAsync(filePath: options.Path);
         }
 
-        public async Task StopAsync(TracingStopOptions options = default)
+        public Task StopAsync(TracingStopOptions options = default)
         {
-            await _channel.Connection.WrapApiCallAsync(async () =>
+            return _channel.Connection.WrapApiCallAsync(async () =>
             {
                 await StopChunkAsync(new() { Path = options?.Path }).ConfigureAwait(false);
                 await _channel.TracingStopAsync().ConfigureAwait(false);
                 return 42; // We need to return something to make generics work.
-            }).ConfigureAwait(false);
+            });
         }
 
         private async Task DoStopChunkAsync(string filePath)

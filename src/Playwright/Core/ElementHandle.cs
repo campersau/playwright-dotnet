@@ -169,10 +169,10 @@ namespace Microsoft.Playwright.Core
         public Task SetInputFilesAsync(FilePayload files, ElementHandleSetInputFilesOptions options = default)
             => SetInputFilesAsync(new[] { files }, options);
 
-        public async Task SetInputFilesAsync(IEnumerable<FilePayload> files, ElementHandleSetInputFilesOptions options = default)
+        public Task SetInputFilesAsync(IEnumerable<FilePayload> files, ElementHandleSetInputFilesOptions options = default)
         {
             var converted = SetInputFilesHelpers.ConvertInputFiles(files);
-            await _channel.SetInputFilesAsync(converted.Files, options?.NoWaitAfter, options?.Timeout).ConfigureAwait(false);
+            return _channel.SetInputFilesAsync(converted.Files, options?.NoWaitAfter, options?.Timeout);
         }
 
         public async Task<IElementHandle> QuerySelectorAsync(string selector)

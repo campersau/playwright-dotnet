@@ -72,7 +72,7 @@ namespace Microsoft.Playwright.Core
             return await FetchAsync(urlOrRequest.Url, options).ConfigureAwait(false);
         }
 
-        public async Task<IAPIResponse> FetchAsync(string url, APIRequestContextOptions options = null)
+        public Task<IAPIResponse> FetchAsync(string url, APIRequestContextOptions options = null)
         {
             options ??= new APIRequestContextOptions();
             var queryParams = new Dictionary<string, string>();
@@ -102,7 +102,7 @@ namespace Microsoft.Playwright.Core
                 jsonData = options.DataObject;
             }
 
-            return await _channel.FetchAsync(
+            return _channel.FetchAsync(
                 url,
                 queryParams,
                 options.Method,
@@ -113,7 +113,7 @@ namespace Microsoft.Playwright.Core
                 (FormData)options.Multipart,
                 options.Timeout,
                 options?.FailOnStatusCode,
-                options?.IgnoreHTTPSErrors).ConfigureAwait(false);
+                options?.IgnoreHTTPSErrors);
         }
 
         private bool IsJsonContentType(IDictionary<string, string> headers)

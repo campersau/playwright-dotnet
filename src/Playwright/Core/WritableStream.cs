@@ -87,9 +87,9 @@ namespace Microsoft.Playwright.Core
 
         public override void Write(byte[] buffer, int offset, int count) => throw new NotImplementedException();
 
-        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            await this._stream.WriteAsync(Convert.ToBase64String(buffer)).ConfigureAwait(false);
+            return this._stream.WriteAsync(Convert.ToBase64String(buffer));
         }
     }
 }
