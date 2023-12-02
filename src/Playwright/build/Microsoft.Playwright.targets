@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="CopyPlaywrightFilesToOutput" AfterTargets="ResolveAssemblyReferences">
+  <Target Name="PlaywrightCopyFilesToOutput" AfterTargets="ResolveAssemblyReferences">
     <PropertyGroup>
       <PlaywrightPlatform Condition="'$(PlaywrightPlatform)' == ''">%(RuntimePack.RuntimeIdentifier)</PlaywrightPlatform>
       <PlaywrightPlatform Condition="'$(PlaywrightPlatform)' == ''">$(RuntimeIdentifier)</PlaywrightPlatform>
@@ -56,5 +56,11 @@
         <Pack>false</Pack>
       </Content>
     </ItemGroup>
+  </Target>
+  <Target Name="PlaywrightChmodExecutables" AfterTargets="CopyFilesToOutputDirectory" Condition="!$([MSBuild]::IsOSPlatform('Windows'))">
+    <ItemGroup>
+      <_PlaywrightChmodItems Include="$(OutputPath)\.playwright\node\**\playwright.sh" />
+    </ItemGroup>
+    <Exec Command="chmod u+x &quot;$(OutputPath)%(_PlaywrightChmodItems.FullPath)&quot;" />
   </Target>
 </Project>
